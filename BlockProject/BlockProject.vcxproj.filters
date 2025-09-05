@@ -29,22 +29,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\marco-spritesheet.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="assets\gd.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="assets\gd2.png">
-      <Filter>Assets</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\box.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

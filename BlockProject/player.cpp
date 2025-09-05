@@ -4,7 +4,8 @@
 #include "player.h"
 
 Player::Player(float s, float x, float y, SDL_Texture* t)
-    : speed{ s }, x{ x }, y{ y }, texture{ t }
+    : speed{ s }, x{ x }, y{ y }, texture{ t }, box{ box },
+      velX { velX }, velY{ velY }
 {
     SDL_GetTextureSize(t, &w, &h);
 }
@@ -14,10 +15,6 @@ void Player::render(SDL_Renderer* renderer)
     box = { x, y, w, h };
     SDL_RenderTexture(renderer, texture, NULL, &box);
 }
-
-
-//SDL_RenderTexture(renderer, texture, NULL, &box);
-//SDL_RenderPresent(renderer);
 
 float Player::get_speed() { return speed; }
 float Player::get_x() { return x; }

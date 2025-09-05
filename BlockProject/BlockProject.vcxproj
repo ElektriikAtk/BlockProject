@@ -156,13 +156,11 @@
     <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\gd.png" />
-    <Image Include="assets\gd2.png" />
-    <Image Include="assets\marco-spritesheet.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="functions.h" />
     <ClInclude Include="player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\box.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

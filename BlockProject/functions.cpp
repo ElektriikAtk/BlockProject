@@ -79,8 +79,11 @@ void movement(Player& object)
 
 
     int w = 0, h = 0;
+    float scaleX, scaleY;
+    SDL_GetRenderScale(renderer, &scaleX, &scaleY);
     SDL_GetRenderOutputSize(renderer, &w, &h);
-
+    w /= scaleX;
+    h /= scaleY;
     bool onGround = (object.get_y() + object.get_h() >= h);
 
     if (keys[SDL_SCANCODE_SPACE] && onGround) {

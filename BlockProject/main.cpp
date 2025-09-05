@@ -10,7 +10,7 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-
+#define RENDER_SCALE 4
 
 
 SDL_Window* window = NULL;
@@ -24,7 +24,7 @@ void init(SDL_Renderer* renderer) //Performed once at startup. Maybe to preload 
 {
     SDL_SetWindowSurfaceVSync(window, 1); //Sets VSYNC for window to 1, maybe unnecessary?
 
-    SDL_Surface* surface = IMG_Load("assets/gd2.png");
+    SDL_Surface* surface = IMG_Load("assets/box.png");
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     if (!surface) {
         throw std::invalid_argument{ "Failed to load surface" };
@@ -88,21 +88,20 @@ void createBlocks(SDL_Renderer* renderer)
     }
     for (int i = 0; i < blockList.size(); i++)
     {
-        SDL_SetRenderDrawColor(renderer, 255, 50, 50, 255); // static box
+        SDL_SetRenderDrawColor(renderer, 25, 69, 50, 255); // static box
         SDL_RenderFillRect(renderer, &blockList[i]);
-        //SDL_RenderPresent(renderer);
-        //SDL_RenderClear(renderer);
     }
 }
 
     void run()
     {
-        createBlocks(renderer);
-        //SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 127, 0, 255, 255);
+        SDL_RenderClear(renderer);
+        SDL_SetRenderScale(renderer, RENDER_SCALE, RENDER_SCALE); //Is it better RENDER_SCALE or getRenderScale()?
         movement(*player);
         player->render(renderer);
+        createBlocks(renderer);
         SDL_RenderPresent(renderer);
-        //SDL_RenderClear(renderer);
     }
 
 
