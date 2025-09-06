@@ -67,7 +67,7 @@ void movement(Player& object)
         dx /= len;
     }
 
-    // horizontal velocity
+    
     object.set_velX(dx * object.get_speed());
 
     const float gravity = 2500.0f;
@@ -80,8 +80,9 @@ void movement(Player& object)
 
     int w = 0, h = 0;
     float scaleX, scaleY;
-    SDL_GetRenderScale(renderer, &scaleX, &scaleY);
+    SDL_GetRenderScale(renderer, &scaleX, &scaleY); // Fix so that it is scaleless
     SDL_GetRenderOutputSize(renderer, &w, &h);
+    //SDL_GetRenderLogicalPresentation(renderer, &w, &h, NULL);
     w /= scaleX;
     h /= scaleY;
     bool onGround = (object.get_y() + object.get_h() >= h);
@@ -92,4 +93,28 @@ void movement(Player& object)
 
     object.set_x(clamp(object.get_x(), 0.0f, w - object.get_w()));
     object.set_y(clamp(object.get_y(), 0.0f, h - object.get_h()));
+}
+
+void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
+{
+    if (blockList.empty())
+    {
+        float scaleX, scaleY;
+        int w, h;
+        SDL_GetRenderScale(renderer, &scaleX, &scaleY);
+        SDL_GetRenderOutputSize(renderer, &w, &h);
+        //SDL_GetRenderLogicalPresentation(renderer, &w, &h, NULL);
+        float blockSize = 4;
+        for (int i = 0; i < h; i += 10)
+        {
+            SDL_FRect block = { i, i, 10, 10    };
+            blockList.push_back(block);
+
+        }
+    }
+    for (int i = 0; i < blockList.size(); i++)
+    {
+        SDL_SetRenderDrawColor(renderer, 25, 69, 50, 255); // static box
+        SDL_RenderFillRect(renderer, &blockList[i]);
+    }
 }

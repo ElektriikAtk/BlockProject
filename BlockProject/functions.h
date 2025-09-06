@@ -10,3 +10,4 @@ float clamp(float value, float min, float max);
 SDL_Texture* loadSprites(SDL_Surface* spriteSheetSurface);
 float getDeltaTime();
 void movement(Player& object);
+void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList);

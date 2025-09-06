@@ -5,12 +5,11 @@
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
-#include <vector>
 #include "functions.h"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-#define RENDER_SCALE 4
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 720
+#define SCALING_FACTOR 3
 
 
 SDL_Window* window = NULL;
@@ -20,9 +19,13 @@ std::vector<SDL_FRect> blockList;
 
 
 Player* player;
+
 void init(SDL_Renderer* renderer) //Performed once at startup. Maybe to preload textures?
 {
     SDL_SetWindowSurfaceVSync(window, 1); //Sets VSYNC for window to 1, maybe unnecessary?
+
+    
+
 
     SDL_Surface* surface = IMG_Load("assets/box.png");
     texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -33,8 +36,10 @@ void init(SDL_Renderer* renderer) //Performed once at startup. Maybe to preload 
         throw std::invalid_argument{ "Failed to load texture" };
     }
     SDL_DestroySurface(surface);
-
-    player = new Player{ 500, 50, 50, texture };
+    float player_h;
+    SDL_GetTextureSize(texture, NULL, &player_h);
+    float playerSpeed = 100;
+    player = new Player{ playerSpeed, 0, WINDOW_HEIGHT - player_h, texture }; //Find better solution
     SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
     SDL_RenderClear(renderer);
 
@@ -75,32 +80,19 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     return SDL_APP_CONTINUE;
 }
 
-void createBlocks(SDL_Renderer* renderer)
-{
-    if (blockList.size() == 0)
-    {
-        for (int i = 0; i < 120; i += 12)
-        {
-            SDL_FRect block = { i, i ,10, 10 };
-            blockList.push_back(block);
-
-        }
-    }
-    for (int i = 0; i < blockList.size(); i++)
-    {
-        SDL_SetRenderDrawColor(renderer, 25, 69, 50, 255); // static box
-        SDL_RenderFillRect(renderer, &blockList[i]);
-    }
-}
-
     void run()
     {
+        SDL_SetRenderScale(renderer, SCALING_FACTOR, SCALING_FACTOR); //Is it better RENDER_SCALE or getRenderScale()?
+        //SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH/SCALING_FACTOR, WINDOW_HEIGHT / SCALING_FACTOR, SDL_LOGICAL_PRESENTATION_INTEGER_SCALE);
+        
         SDL_SetRenderDrawColor(renderer, 127, 0, 255, 255);
         SDL_RenderClear(renderer);
-        SDL_SetRenderScale(renderer, RENDER_SCALE, RENDER_SCALE); //Is it better RENDER_SCALE or getRenderScale()?
         movement(*player);
+        player->colissionCheck(blockList);
         player->render(renderer);
-        createBlocks(renderer);
+        createBlocks(renderer, blockList);
+        
+        
         SDL_RenderPresent(renderer);
     }
 

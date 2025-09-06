@@ -2,6 +2,10 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <iostream>
+#include <vector>
+
+
 
 
 class Player
@@ -21,6 +25,7 @@ public:
     void set_velX(float velX);
     void set_texture(SDL_Texture* texture);
     void update(float dt);
+    bool colissionCheck(std::vector<SDL_FRect> blockList);
 private:
     float speed;
     float x, y;

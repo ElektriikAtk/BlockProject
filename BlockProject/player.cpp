@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "player.h"
 
+
+
 Player::Player(float s, float x, float y, SDL_Texture* t)
     : speed{ s }, x{ x }, y{ y }, texture{ t }, box{ box },
       velX { velX }, velY{ velY }
@@ -31,4 +33,61 @@ void Player::update(float dt)
 {
     x += velX * dt;
     y += velY * dt;
+}
+
+bool Player::colissionCheck(std::vector<SDL_FRect> blockList)
+{
+    float playerLeft = this->x;
+    float playerRight = this->x + this-> w;
+    float playerTop = this->y;
+    float playerBottom = this->y + this->h;
+    std::cout << "PlayerLeft: " << playerLeft << " PlayerTop: " << playerTop << "\n";
+    for (int i = 0; i < blockList.size(); i++)
+    {
+        float blockLeft = blockList[i].x;
+        float blockRight = blockList[i].x + blockList[i].w;
+        float blockTop = blockList[i].y;
+        float blockBottom = blockList[i].y + blockList[i].h;
+        bool above = false;
+        bool verticalAlligned = false;
+        std::cout << "i: " << i;
+
+
+
+        if (blockBottom <= playerTop)
+        {
+            std::cout << " Above";
+            above = true;
+        }
+        else
+        {
+           // std::cout << "\n";
+        }
+
+        if ((blockLeft < playerRight && blockRight > playerLeft))
+        {
+            std::cout << " and verticalAlligned" << std::endl;
+            verticalAlligned = true;
+        }
+        else
+        {
+            std::cout << "\n";
+        }
+
+        if (verticalAlligned && !above)
+        {
+            int render_h;
+            SDL_GetRenderOutputSize(renderer, NULL, &render_h);
+            //SDL_GetRenderLogicalPresentation(renderer, NULL, &render_h, NULL);
+            float scale;
+            SDL_GetRenderScale(renderer, &scale, &scale);
+            if (blockBottom*scale + this->h <= render_h)
+            {
+                this->y = blockBottom;
+            }
+        }
+    }   
+    //std::cout << "Block 3 bottom: " << blockList[3].y + blockList[3].h << std::endl; // DO not use program crashes for some reason, should be checked
+    system("cls");
+    return true;
 }
