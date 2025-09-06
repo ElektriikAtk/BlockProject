@@ -52,7 +52,13 @@ float getDeltaTime()
     return delta;
 }
 
-
+void getScaledSize(int& w, int& h, float& scale)
+{
+    SDL_GetRenderScale(renderer, &scale, NULL); // Fix so that it is scaleless
+    SDL_GetRenderOutputSize(renderer, &w, &h);
+    w /= scale;
+    h /= scale;
+}
 
 void movement(Player& object)
 {
@@ -79,12 +85,9 @@ void movement(Player& object)
 
 
     int w = 0, h = 0;
-    float scaleX, scaleY;
-    SDL_GetRenderScale(renderer, &scaleX, &scaleY); // Fix so that it is scaleless
-    SDL_GetRenderOutputSize(renderer, &w, &h);
-    //SDL_GetRenderLogicalPresentation(renderer, &w, &h, NULL);
-    w /= scaleX;
-    h /= scaleY;
+    float scale;
+    getScaledSize(w, h, scale);
+
     bool onGround = (object.get_y() + object.get_h() >= h);
 
     if (keys[SDL_SCANCODE_SPACE] && onGround) {
@@ -99,11 +102,10 @@ void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
 {
     if (blockList.empty())
     {
-        float scaleX, scaleY;
+        float scale;
         int w, h;
-        SDL_GetRenderScale(renderer, &scaleX, &scaleY);
-        SDL_GetRenderOutputSize(renderer, &w, &h);
-        //SDL_GetRenderLogicalPresentation(renderer, &w, &h, NULL);
+        getScaledSize(w, h, scale);
+        //SDL_GetWindowSizeInPixels(window, &w, &h);
         float blockSize = 4;
         for (int i = 0; i < h; i += 10)
         {

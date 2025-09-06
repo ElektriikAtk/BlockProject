@@ -50,13 +50,15 @@ bool Player::colissionCheck(std::vector<SDL_FRect> blockList)
         float blockBottom = blockList[i].y + blockList[i].h;
         bool above = false;
         bool verticalAlligned = false;
-        std::cout << "i: " << i;
+        //std::cout << "i: " << i;
 
 
 
         if (blockBottom <= playerTop)
         {
-            std::cout << " Above";
+            //std::cout << " Above";
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); //Red
+            SDL_RenderFillRect(renderer, &blockList[i]);
             above = true;
         }
         else
@@ -66,7 +68,7 @@ bool Player::colissionCheck(std::vector<SDL_FRect> blockList)
 
         if ((blockLeft < playerRight && blockRight > playerLeft))
         {
-            std::cout << " and verticalAlligned" << std::endl;
+            //std::cout << " and verticalAlligned" << std::endl;
             verticalAlligned = true;
         }
         else
@@ -76,12 +78,10 @@ bool Player::colissionCheck(std::vector<SDL_FRect> blockList)
 
         if (verticalAlligned && !above)
         {
-            int render_h;
-            SDL_GetRenderOutputSize(renderer, NULL, &render_h);
-            //SDL_GetRenderLogicalPresentation(renderer, NULL, &render_h, NULL);
+            int w, h;
             float scale;
-            SDL_GetRenderScale(renderer, &scale, &scale);
-            if (blockBottom*scale + this->h <= render_h)
+            getScaledSize(w, h, scale);
+            if (blockBottom + this->h <= h)
             {
                 this->y = blockBottom;
             }

@@ -9,5 +9,6 @@ extern SDL_Renderer* renderer;
 float clamp(float value, float min, float max);
 SDL_Texture* loadSprites(SDL_Surface* spriteSheetSurface);
 float getDeltaTime();
+void getScaledSize(int& w, int& h, float& scale);
 void movement(Player& object);
 void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList);
