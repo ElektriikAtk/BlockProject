@@ -35,58 +35,89 @@ void Player::update(float dt)
     y += velY * dt;
 }
 
-bool Player::colissionCheck(std::vector<SDL_FRect> blockList)
+bool Player::colissionCheck(std::vector<SDL_FRect> blockList) // Should be separated so that block are generated in another function
 {
     float playerLeft = this->x;
     float playerRight = this->x + this-> w;
     float playerTop = this->y;
     float playerBottom = this->y + this->h;
-    std::cout << "PlayerLeft: " << playerLeft << " PlayerTop: " << playerTop << "\n";
+    int w, h;
+    w = renderContext.logicalW;
+    h = renderContext.logicalH;
+    std::vector<float> currentlyAlignedBottom; //Bottom part of the currently vertically aligned boxes
+
+    std::cout << "PlayerVelY: " << get_velY() << " | PlayerLeft: " << playerLeft << " PlayerTop: " << playerTop << " W, H: " << w << " " << h << "\n";
     for (int i = 0; i < blockList.size(); i++)
     {
         float blockLeft = blockList[i].x;
         float blockRight = blockList[i].x + blockList[i].w;
         float blockTop = blockList[i].y;
         float blockBottom = blockList[i].y + blockList[i].h;
-        bool above = false;
+        bool above = true; // Represents if the block is above the player
         bool verticalAlligned = false;
-        //std::cout << "i: " << i;
+
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
 
-
-        if (blockBottom <= playerTop)
-        {
-            //std::cout << " Above";
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); //Red
-            SDL_RenderFillRect(renderer, &blockList[i]);
-            above = true;
-        }
-        else
-        {
-           // std::cout << "\n";
-        }
-
+        std::cout << "i: " << i;
+        
         if ((blockLeft < playerRight && blockRight > playerLeft))
         {
-            //std::cout << " and verticalAlligned" << std::endl;
+            std::cout << " verticalAligned" << std::endl;
             verticalAlligned = true;
+            if (currentlyAlignedBottom.size() < 2)
+            {
+                currentlyAlignedBottom.push_back(blockBottom);
+
+            }
         }
         else
         {
-            std::cout << "\n";
-        }
-
-        if (verticalAlligned && !above)
-        {
-            int w, h;
-            float scale;
-            getScaledSize(w, h, scale);
-            if (blockBottom + this->h <= h)
+            std::cout << " notAlligned" << std::endl;
+            if (!currentlyAlignedBottom.empty())
             {
-                this->y = blockBottom;
+                //currentlyAlignedBottom.pop_back();
             }
         }
+
+
+        int max_value = 0;
+        if (currentlyAlignedBottom.size() == 2)
+        {
+            if (currentlyAlignedBottom[0] > currentlyAlignedBottom[1])
+            {
+                max_value = currentlyAlignedBottom[0];
+            }
+            else
+            {
+                max_value = currentlyAlignedBottom[1];
+            }
+        }
+
+        if (max_value == int(playerTop))
+        {
+            std::cout << "True" << std::endl;
+            if (this->velY < 0 && verticalAlligned)
+            {
+                h = renderContext.logicalH;
+                //if (blockBottom + this->h <= h)
+                //{
+                this->y = max_value;
+                }
+
+                this->velY = 0;
+                //std::cout << "Reset" << std::endl;
+            //}
+            }
+        else
+        {
+            std::cout << "" << std::endl;
+        }
     }   
+    for (int i = 0; i < currentlyAlignedBottom.size(); i++)
+    {
+        std::cout << "currentlyAlignedBottom" << i << ": " << currentlyAlignedBottom[i] << std::endl;
+    }
     //std::cout << "Block 3 bottom: " << blockList[3].y + blockList[3].h << std::endl; // DO not use program crashes for some reason, should be checked
     system("cls");
     return true;
