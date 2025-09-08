@@ -5,6 +5,16 @@
 #include <stdexcept>
 #include "functions.h"
 
+void setupRenderer(SDL_Renderer* renderer)
+{
+    SDL_GetRenderScale(renderer, &renderContext.scale, NULL); // scaleX = scaleY assumed
+
+    int w, h;
+    SDL_GetRenderOutputSize(renderer, &w, &h);
+
+    renderContext.logicalW = w / renderContext.scale;
+    renderContext.logicalH = h / renderContext.scale;
+}
 
 float clamp(float value, float min, float max) {
     if (value < min) return min;
@@ -76,7 +86,7 @@ void movement(Player& object)
     
     object.set_velX(dx * object.get_speed());
 
-    const float gravity = 2500.0f;
+    const float gravity = 200.0f;
     object.set_velY(object.get_velY() + gravity * dt);
 
     object.set_x(object.get_x() + dx * object.get_speed() * dt);
@@ -85,13 +95,19 @@ void movement(Player& object)
 
 
     int w = 0, h = 0;
-    float scale;
-    getScaledSize(w, h, scale);
+    w = renderContext.logicalW;
+    h = renderContext.logicalH;
 
-    bool onGround = (object.get_y() + object.get_h() >= h);
+    bool onGround = false;
+
+    if (object.get_y() + object.get_h() >= h)
+    {
+        onGround = true;
+        object.set_velY(0);
+    }
 
     if (keys[SDL_SCANCODE_SPACE] && onGround) {
-        object.set_velY(gravity / (-3.0f)); // jump impulse
+        object.set_velY(gravity / (-0.75f)); // jump impulse
     }
 
     object.set_x(clamp(object.get_x(), 0.0f, w - object.get_w()));
@@ -102,14 +118,15 @@ void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
 {
     if (blockList.empty())
     {
-        float scale;
+        
         int w, h;
-        getScaledSize(w, h, scale);
-        //SDL_GetWindowSizeInPixels(window, &w, &h);
-        float blockSize = 4;
-        for (int i = 0; i < h; i += 10)
+        w = renderContext.logicalW;
+        h = renderContext.logicalH;
+        
+        float blockSize = 50;
+        for (int i = 0; i < h/blockSize; i ++)
         {
-            SDL_FRect block = { i, i, 10, 10    };
+            SDL_FRect block = { i*blockSize, i * blockSize, blockSize, blockSize};
             blockList.push_back(block);
 
         }
@@ -119,4 +136,5 @@ void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
         SDL_SetRenderDrawColor(renderer, 25, 69, 50, 255); // static box
         SDL_RenderFillRect(renderer, &blockList[i]);
     }
+        //SDL_RenderClear(renderer);
 }

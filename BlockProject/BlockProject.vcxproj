@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="functions.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="renderContext.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\box.png" />
