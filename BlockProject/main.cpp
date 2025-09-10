@@ -7,10 +7,6 @@
 #include <stdexcept>
 #include "functions.h"
 
-
-
-
-
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 SDL_Texture* texture = NULL;
@@ -39,8 +35,8 @@ void init(SDL_Renderer* renderer) //Performed once at startup. Maybe to preload 
     SDL_DestroySurface(surface);
     float player_h;
     SDL_GetTextureSize(texture, NULL, &player_h);
-    float playerSpeed = 100;
-    player = new Player{ playerSpeed, 0, 0/*WINDOW_HEIGHT - player_h*/, texture }; //Find better solution
+    
+    player = new Player{ 0, WINDOW_HEIGHT - player_h, playerSpeed, texture }; //Find better solution
 }
 
 /* This function runs once at startup. */
@@ -82,15 +78,16 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     void run()
     {       
         SDL_RenderClear(renderer);
-        
         SDL_SetRenderScale(renderer, SCALING_FACTOR, SCALING_FACTOR);
-        movement(*player);
-        player->colissionCheck(blockList);
+        setupRenderer(renderer); // So that the renderContext updates if the window is resized
+
         player->render(renderer);
         createBlocks(renderer, blockList);        
+        //player->colissionCheck(blockList);
+        movement(*player, blockList[1]);
+
         SDL_SetRenderDrawColor(renderer, 63, 27, 71, 255);
         SDL_RenderPresent(renderer);
-        setupRenderer(renderer); // So that the renderContext updates if the window is resized
     }
 
 

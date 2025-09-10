@@ -62,34 +62,30 @@ float getDeltaTime()
     return delta;
 }
 
-void getScaledSize(int& w, int& h, float& scale)
-{
-    SDL_GetRenderScale(renderer, &scale, NULL); // Fix so that it is scaleless
-    SDL_GetRenderOutputSize(renderer, &w, &h);
-    w /= scale;
-    h /= scale;
-}
-
-void movement(Player& object)
+void movement(Player& object, const SDL_FRect& block) 
 {
     float dt = getDeltaTime();
     const bool* keys = SDL_GetKeyboardState(NULL);
-    float dx = 0.0f;
-    if (keys[SDL_SCANCODE_A])  dx -= 1.0f;
-    if (keys[SDL_SCANCODE_D])  dx += 1.0f;
+    object.set_dx(0.0f);
+    if (keys[SDL_SCANCODE_A])  object.set_dx(object.get_dx() - 1.0f);
+    if (keys[SDL_SCANCODE_D])  object.set_dx(object.get_dx() + 1.0f);
     
-    if (dx != 0.0f) {
-        float len = SDL_sqrtf(dx * dx );
-        dx /= len;
+    if (object.get_dx() != 0.0f) {
+        //Ignore for now
+        //float len = SDL_sqrtf(dx * dx );
+        //dx /= len;
     }
 
     
-    object.set_velX(dx * object.get_speed());
+    
 
-    const float gravity = 200.0f;
-    object.set_velY(object.get_velY() + gravity * dt);
+    //const float gravity = 30.0f;
 
-    object.set_x(object.get_x() + dx * object.get_speed() * dt);
+    
+
+    object.set_x(object.get_x() + object.get_velX() * dt);
+    object.set_velX(object.get_dx() * object.get_speed());
+    object.set_velY(object.get_velY() + gravity * dt);   
     object.set_y(object.get_y() + object.get_velY() * dt);
 
 
@@ -107,11 +103,13 @@ void movement(Player& object)
     }
 
     if (keys[SDL_SCANCODE_SPACE] && onGround) {
-        object.set_velY(gravity / (-0.75f)); // jump impulse
+        object.set_velY(-jumpStrength); // jump impulse
     }
 
     object.set_x(clamp(object.get_x(), 0.0f, w - object.get_w()));
     object.set_y(clamp(object.get_y(), 0.0f, h - object.get_h()));
+
+    object.collisionHandler(block);
 }
 
 void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
@@ -123,7 +121,7 @@ void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
         w = renderContext.logicalW;
         h = renderContext.logicalH;
         
-        float blockSize = 50;
+        //float blockSize = 50;
         for (int i = 0; i < h/blockSize; i ++)
         {
             SDL_FRect block = { i*blockSize, i * blockSize, blockSize, blockSize};

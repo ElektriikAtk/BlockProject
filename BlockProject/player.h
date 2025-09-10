@@ -11,25 +11,30 @@
 class Player
 {
 public:
-    Player(float s, float x, float y, SDL_Texture* t);
+    Player(float x, float y, float s, SDL_Texture* t);
     void render(SDL_Renderer* renderer);
     float get_speed();
     float get_x();
     float get_y();
     float get_w();
     float get_h();
+    float get_dx();
     float get_velY();
+    float get_velX();
     void set_x(float x);
     void set_y(float y);
+    void set_dx(float dx);
     void set_velY(float velY);
     void set_velX(float velX);
     void set_texture(SDL_Texture* texture);
-    void update(float dt);
-    bool colissionCheck(std::vector<SDL_FRect> blockList);
+    
+    bool collision(const SDL_FRect& block);
+    void collisionHandler(const SDL_FRect& block);
 private:
     float speed;
     float x, y;
     float w, h;
+    float dx; // Maybe dy needed also
     SDL_Texture* texture;
     SDL_FRect box;
     float velX, velY;
