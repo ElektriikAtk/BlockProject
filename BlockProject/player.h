@@ -27,9 +27,9 @@ public:
     void set_velY(float velY);
     void set_velX(float velX);
     void set_texture(SDL_Texture* texture);
-    
+    void movement();
     bool collision(const SDL_FRect& block);
-    void collisionHandler(const SDL_FRect& block);
+    void handleCollision(const std::vector<SDL_FRect>& blockList);
 private:
     float speed;
     float x, y;

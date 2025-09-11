@@ -62,66 +62,16 @@ float getDeltaTime()
     return delta;
 }
 
-void movement(Player& object, const SDL_FRect& block) 
-{
-    float dt = getDeltaTime();
-    const bool* keys = SDL_GetKeyboardState(NULL);
-    object.set_dx(0.0f);
-    if (keys[SDL_SCANCODE_A])  object.set_dx(object.get_dx() - 1.0f);
-    if (keys[SDL_SCANCODE_D])  object.set_dx(object.get_dx() + 1.0f);
-    
-    if (object.get_dx() != 0.0f) {
-        //Ignore for now
-        //float len = SDL_sqrtf(dx * dx );
-        //dx /= len;
-    }
 
-    
-    
-
-    //const float gravity = 30.0f;
-
-    
-
-    object.set_x(object.get_x() + object.get_velX() * dt);
-    object.set_velX(object.get_dx() * object.get_speed());
-    object.set_velY(object.get_velY() + gravity * dt);   
-    object.set_y(object.get_y() + object.get_velY() * dt);
-
-
-
-    int w = 0, h = 0;
-    w = renderContext.logicalW;
-    h = renderContext.logicalH;
-
-    bool onGround = false;
-
-    if (object.get_y() + object.get_h() >= h)
-    {
-        onGround = true;
-        object.set_velY(0);
-    }
-
-    if (keys[SDL_SCANCODE_SPACE] && onGround) {
-        object.set_velY(-jumpStrength); // jump impulse
-    }
-
-    object.set_x(clamp(object.get_x(), 0.0f, w - object.get_w()));
-    object.set_y(clamp(object.get_y(), 0.0f, h - object.get_h()));
-
-    object.collisionHandler(block);
-}
 
 void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
 {
     if (blockList.empty())
     {
         
-        int w, h;
-        w = renderContext.logicalW;
+        int h;
         h = renderContext.logicalH;
         
-        //float blockSize = 50;
         for (int i = 0; i < h/blockSize; i ++)
         {
             SDL_FRect block = { i*blockSize, i * blockSize, blockSize, blockSize};
@@ -134,5 +84,4 @@ void createBlocks(SDL_Renderer* renderer, std::vector<SDL_FRect>& blockList)
         SDL_SetRenderDrawColor(renderer, 25, 69, 50, 255); // static box
         SDL_RenderFillRect(renderer, &blockList[i]);
     }
-        //SDL_RenderClear(renderer);
 }

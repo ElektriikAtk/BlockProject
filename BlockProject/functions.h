@@ -1,17 +1,20 @@
 #pragma once
+#include <iostream>
+#include <iomanip>
+#include <stdexcept>
 #include "player.h"
 #include "renderContext.h"
 
 // Actual dimensions for an unscaled window. If scaled, refer to struct renderContext
 #define WINDOW_WIDTH 1500
 #define WINDOW_HEIGHT 950
-#define SCALING_FACTOR 6
+#define SCALING_FACTOR 1
 
 // Used in movement()
-constexpr float gravity = 20.0f*SCALING_FACTOR;
-constexpr float playerSpeed = gravity/SCALING_FACTOR;
-constexpr float jumpStrength = gravity * 0.75;
-constexpr float blockSize = 50;
+constexpr float playerSpeed = 1000.0f*SCALING_FACTOR;
+constexpr float gravity = playerSpeed/SCALING_FACTOR;
+constexpr float jumpStrength = gravity * 1;
+constexpr float blockSize = 250; // Add functionality so that it is modified depending on player size or scale
 
 // tell the compiler these exist in another file
 extern SDL_Window* window;

@@ -43,5 +43,17 @@
     <Image Include="assets\box.png">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="assets\box_50x50.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="assets\box_500x500.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="assets\box_200x200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="assets\box_250x250.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

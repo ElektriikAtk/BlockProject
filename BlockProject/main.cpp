@@ -2,9 +2,6 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
-#include <iostream>
-#include <iomanip>
-#include <stdexcept>
 #include "functions.h"
 
 SDL_Window* window = NULL;
@@ -17,6 +14,7 @@ Player* player;
 
 
 
+
 void init(SDL_Renderer* renderer) //Performed once at startup. Maybe to preload textures?
 {
     SDL_SetWindowSurfaceVSync(window, 1); //Sets VSYNC for window to 1, maybe unnecessary?
@@ -24,7 +22,7 @@ void init(SDL_Renderer* renderer) //Performed once at startup. Maybe to preload 
 
     //setupRenderer(renderer);
 
-    SDL_Surface* surface = IMG_Load("assets/box.png");
+    SDL_Surface* surface = IMG_Load("assets/box_250x250.png");
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     if (!surface) {
         throw std::invalid_argument{ "Failed to load surface" };
@@ -33,10 +31,10 @@ void init(SDL_Renderer* renderer) //Performed once at startup. Maybe to preload 
         throw std::invalid_argument{ "Failed to load texture" };
     }
     SDL_DestroySurface(surface);
-    float player_h;
-    SDL_GetTextureSize(texture, NULL, &player_h);
+    float player_w = 0, player_h = 0;
+    SDL_GetTextureSize(texture, &player_w, &player_h);
     
-    player = new Player{ 0, WINDOW_HEIGHT - player_h, playerSpeed, texture }; //Find better solution
+    player = new Player{ WINDOW_WIDTH - player_w, WINDOW_HEIGHT - player_h, playerSpeed, texture }; //Find better solution
 }
 
 /* This function runs once at startup. */
@@ -83,8 +81,8 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 
         player->render(renderer);
         createBlocks(renderer, blockList);        
-        //player->colissionCheck(blockList);
-        movement(*player, blockList[1]);
+        player->handleCollision(blockList);
+        player->movement();
 
         SDL_SetRenderDrawColor(renderer, 63, 27, 71, 255);
         SDL_RenderPresent(renderer);
