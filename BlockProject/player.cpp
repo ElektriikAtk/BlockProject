@@ -26,12 +26,14 @@ float Player::get_h() { return h; }
 float Player::get_dx() { return dx; }
 float Player::get_velY() { return velY; };
 float Player::get_velX() { return velX; };
+bool Player::get_ground() { return onGround; };
 void Player::set_x(float x) { this->x = x; }
 void Player::set_y(float y) { this->y = y; }
 void Player::set_dx(float dx) { this->dx = dx; }
 void Player::set_velY(float velY) { this->velY = velY; };
 void Player::set_velX(float velX) { this->velX = velX; };
 void Player::set_texture(SDL_Texture* texture) { this->texture = texture; }
+void Player::set_ground(bool onGround) { this->onGround = onGround; }
 
 void Player::movement()
 {
@@ -55,29 +57,19 @@ void Player::movement()
     w = renderContext.logicalW;
     h = renderContext.logicalH;
 
-    bool onGround = false;
-
-
-    if (y + this->h >= h || velY == 0)
+    if (y + this->h >= h)
     {
-            onGround = true;
-        if (y + this->h >= h)
-        {
-            velY = 0;
-        }
-        else
-        {
-            velY = velY + gravity * dt;
-        }
+        onGround = true;
+        velY = 0;
     }
-    else
-    {
+
+    if (!onGround)
         velY = velY + gravity * dt;
-    }
 
 
     if (keys[SDL_SCANCODE_SPACE] && onGround) {
         velY = -jumpStrength; // jump impulse
+        onGround = false;
     }
 
     x = x + velX * dt;
@@ -132,6 +124,7 @@ void Player::handleCollision(const std::vector<SDL_FRect>& blockList)
                 std::cout << " Top";
                 velY = 0;
                 y = blockList[i].y - h; // Stays on top of blockList[i]
+                onGround = true;
 
             }
             else if (velX > 0 && !(int(x) == blockList[i].x + blockList[i].w))

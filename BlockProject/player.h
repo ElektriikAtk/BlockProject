@@ -30,6 +30,8 @@ public:
     void movement();
     bool collision(const SDL_FRect& block);
     void handleCollision(const std::vector<SDL_FRect>& blockList);
+    bool get_ground();
+    void set_ground(bool ground);
 private:
     float speed;
     float x, y;
@@ -38,4 +40,5 @@ private:
     SDL_Texture* texture;
     SDL_FRect box;
     float velX, velY;
+    bool onGround;
 };
